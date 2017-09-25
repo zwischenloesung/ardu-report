@@ -14,6 +14,7 @@ COPYRIGHT:    (C) 2017 by Michael Lustenberger and INOFIX GmbH
 
 #from libardurep import datastore, datareporter, serialreader
 import argparse
+import getpass
 import os
 import re
 import sys
@@ -125,7 +126,7 @@ def standard_mode(args):
     reader.start()
     time.sleep(args.seconds)
     reader.halt()
-    reporter.log_stdout()
+    reporter.log()
 
 if __name__ == '__main__':
     """

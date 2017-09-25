@@ -8,9 +8,11 @@ COPYRIGHT:    (C) 2017 by Michael Lustenberger and INOFIX GmbH
               License (v3).
 """
 
-#import datetime
-#import json
+from base64 import b64encode
+import httplib
 import re
+import requests
+import urllib2
 
 class DataReporter(object):
     """
@@ -58,7 +60,7 @@ class DataReporter(object):
         f = re.sub("file://", "", url)
         try:
             with open(f, "w") as of:
-                of.write(str(self.data))
+                of.write(str(self.store.data))
         except IOError as e:
             print e
             print "Could not write the content to the file.."
@@ -79,8 +81,8 @@ class DataReporter(object):
         else:
             headers = {"Content-Type": "application/json"}
         try:
-            request = requests.post(url, headers=headers, data=self.data, \
-                                                 verify=do_verify_certificate)
+            request = requests.post(url, headers=headers, \
+                        data=self.store.data, verify=do_verify_certificate)
         except httplib.IncompleteRead as e:
             request = e.partial
 
