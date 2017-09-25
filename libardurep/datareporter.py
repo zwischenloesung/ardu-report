@@ -60,7 +60,7 @@ class DataReporter(object):
         f = re.sub("file://", "", url)
         try:
             with open(f, "w") as of:
-                of.write(str(self.store.data))
+                of.write(str(self.store.get_json_tuples()))
         except IOError as e:
             print e
             print "Could not write the content to the file.."
@@ -82,7 +82,7 @@ class DataReporter(object):
             headers = {"Content-Type": "application/json"}
         try:
             request = requests.post(url, headers=headers, \
-                        data=self.store.data, verify=do_verify_certificate)
+                    data=self.store.get_json(), verify=do_verify_certificate)
         except httplib.IncompleteRead as e:
             request = e.partial
 
