@@ -1,5 +1,7 @@
 # ardu-report
 
+[![Travis CI](https://img.shields.io/travis/zwischenloesung/ardu-report.svg?style=flat)](http://travis-ci.org/zwischenloesung/ardu-report)
+
 Python library and CLI to report back the sensor data from our arduino(s).
 
 ## Basic Idea
