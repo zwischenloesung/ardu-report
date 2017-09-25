@@ -14,5 +14,6 @@ class TestDataStore(unittest.TestCase):
 
         self.store.register_json(j)
 
+        self.assertEqual("777", self.store.data["light_value"]["value"])
         self.assertEqual(j_son[0]["value"], self.store.data["light_value"]["value"])
 
