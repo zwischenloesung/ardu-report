@@ -18,7 +18,7 @@ import time
 
 def standard_mode(args):
     """
-    Helper function to run for a certain amount of time
+    Helper function to run the reader for a certain amount of time
     """
 #    credentials = get_credentials(args)
 
