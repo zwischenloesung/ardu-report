@@ -14,9 +14,100 @@ COPYRIGHT:    (C) 2017 by Michael Lustenberger and INOFIX GmbH
 
 #from libardurep import datastore, datareporter, serialreader
 import argparse
+import os
+import re
+import sys
 import time
+
 from libardurep import datastore, datareporter, serialreader
 
+def interactive_mode(args):
+    """
+    Helper function to run in interactive mode
+    """
+    store = datastore.DataStore()
+    reporter = datareporter.DataReporter(store, "")
+
+    # hold a dict of serial connections
+    threads = {}
+
+    print "Welcome to the interactive mode!"
+    print "You have the following options:"
+    print "    rounds num                       number of rounds to run threads"
+    print "    register [device] [baud]         add a device to observe"
+    print "    unregister [device]              remove a device"
+    print "    report                           write results to stdout"
+    print "    exit                             cleanup and quit"
+
+    # set the default number of rounds to run a thread from the CLI
+    rounds = args.rounds
+
+    while True:
+
+        # prompt for user input
+        sys.stdout.write(":-> ")
+        sys.stdout.flush()
+
+        # get user input
+        m = os.read(0,80)[:-1]
+
+        # prepare the modes
+        ms = m.split(" ")
+        mode = ms[0]
+
+        # standard values from the CLI
+        device = args.device
+        device_name = re.sub("/dev/", "", args.device)
+        baudrate = args.baudrate
+
+        # now do what the user wants - part 1
+        if (mode == "rounds" and len(ms) > 1):
+            rounds = int(ms[1])
+        elif (mode == "exit" or mode == "quit"):
+            # clean up
+            i = iter(threads)
+            for k in i:
+                t = threads[k]
+                t.halt()
+            # and exit
+            return
+        else:
+            # if the device is specified, set it
+            if len(ms) > 1:
+                if ms[1][0:1] == "/":
+                    device = ms[1]
+                    device_name = ms[1].sub("/dev/", "", args.device)
+                else:
+                    device = "/dev/" + ms[1]
+                    device_name = ms[1]
+
+            # if device and baudrate are specified, also set the baudrate
+            if len(ms) > 2:
+                baudrate = ms[2]
+
+            # now do what the user wants
+            if (mode == "register"):
+                if threads.has_key(device_name):
+                    print "This device was already registered"
+                else:
+                    # create an object that connects to the serial line
+                    threads[device_name] = serialreader.SerialReader(device, baudrate, store, rounds)
+                    # start recording
+                    threads[device_name].start()
+            elif (mode == "unregister"):
+                if threads.has_key(device_name) and isinstance(threads[device_name], serialreader.SerialReader):
+                    # end the recording and remove the device from the list
+                    threads[device_name].halt()
+                    threads.pop(device_name)
+            elif (mode == "report"):
+                if reporter.store.last_data_timestamp:
+                    reporter.log_stdout()
+                else:
+                    print "No data has been collected so far, please try again later.."
+            else:
+                print "This mode is not supported: " + mode
+                print "Use one of 'rounds', 'register', 'unregister', "\
+                      "'report', or 'exit' ..."
 
 def standard_mode(args):
     """
@@ -56,8 +147,7 @@ if __name__ == '__main__':
     args = cli_parser.parse_args()
 
     if args.interactive:
-        pass
-#        user_mode(args)
+        interactive_mode(args)
     else:
         standard_mode(args)
 
