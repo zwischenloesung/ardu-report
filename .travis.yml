@@ -1,5 +1,9 @@
 language: python
 python:
-    - 2.7
+  - 2.7
+addons:
+  apt:
+    packages:
+      - python-unittest2
 script:
-    - unit2 discover -v -p "test*.py"
+  - unit2 discover -v -p "test*.py"
