@@ -15,6 +15,7 @@ COPYRIGHT:    (C) 2017 by Michael Lustenberger and INOFIX GmbH
 #from libardurep import datastore, datareporter, serialreader
 import argparse
 import time
+from libardurep import datastore, datareporter, serialreader
 
 def standard_mode(args):
     """
@@ -23,12 +24,13 @@ def standard_mode(args):
 #    credentials = get_credentials(args)
 
 #    logger = DataLogger(args.target, credentials, args.insecure)
-#    store = DataLogger(args.target, credentials, args.insecure)
+    store = datastore.DataStore()
 
-#    reader = SerialReader(args.device, args.baudrate, logger, args.rounds)
-#    reader.start()
+    reader = serialreader.SerialReader(args.device, args.baudrate, store, args.rounds)
+    reader.start()
     time.sleep(args.seconds)
-#    reader.halt()
+    reader.halt()
+    print store.data
 #    logger.log()
 
 if __name__ == '__main__':
