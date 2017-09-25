@@ -30,9 +30,10 @@ class DataStore(object):
         Register the contents as JSON
         """
         j = json.loads(data)
+        self.last_data_timestamp = datetime.datetime.utcnow().replace(microsecond=0).isoformat()
 
         for v in j:
+            v["time"] = self.last_data_timestamp
             self.data[v["name"]] = v
 
-        self.last_data_timestamp = datetime.datetime.utcnow().replace(microsecond=0).isoformat()
 
