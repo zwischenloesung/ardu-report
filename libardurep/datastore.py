@@ -40,7 +40,7 @@ class DataStore(object):
         """
         Get the data in text form (i.e. human readable)
         """
-        t = "==== " + self.last_data_timestamp + " ====\n"
+        t = "==== " + str(self.last_data_timestamp) + " ====\n"
         for k in self.data:
             if self.data[k].has_key("unit"):
                 u = " " + self.data[k]["unit"]
