@@ -1,0 +1,9 @@
+README for the libardurep's test suite
+
+This test cases cover the classes under libardurep.
+
+Use python >=2.7.
+
+To invoke the tests, from the topmost directory level run
+ user@host:~/path/$ unit2 discover -v -p "test*.py"
+
