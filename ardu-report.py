@@ -17,21 +17,24 @@ import argparse
 import time
 from libardurep import datastore, datareporter, serialreader
 
+
 def standard_mode(args):
     """
     Helper function to run the reader for a certain amount of time
     """
-#    credentials = get_credentials(args)
-
-#    logger = DataLogger(args.target, credentials, args.insecure)
     store = datastore.DataStore()
+    reporter = datareporter.DataReporter(store, args.target, None, args.insecure)
+    if args.password:
+        pw = getpass.getpass()
+    else:
+        pw = None
+    reporter.register_credentials(None, args.user, args.user_file, pw, args.password_file)
 
     reader = serialreader.SerialReader(args.device, args.baudrate, store, args.rounds)
     reader.start()
     time.sleep(args.seconds)
     reader.halt()
-    print store.data
-#    logger.log()
+    reporter.log_stdout()
 
 if __name__ == '__main__':
     """
