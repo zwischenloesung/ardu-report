@@ -50,8 +50,11 @@ class DataStore(object):
         return t
 
     def get_json(self):
-        return json.dumps(self.data)
+        j = []
+        for k in self.data:
+            j.append(self.data[k])
+        return json.dumps(j)
 
     def get_json_tuples(self):
-        j = json.dumps(self.data)
+        j = self.get_json()
         return j[1:-1]
