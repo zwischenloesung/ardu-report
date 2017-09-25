@@ -36,4 +36,16 @@ class DataStore(object):
             v["time"] = self.last_data_timestamp
             self.data[v["name"]] = v
 
+    def get_text(self):
+        """
+        Get the data in text form (i.e. human readable)
+        """
+        t = "==== " + self.last_data_timestamp + " ====\n"
+        for k in self.data:
+            if self.data[k].has_key("unit"):
+                u = " " + self.data[k]["unit"]
+            else:
+                u = ""
+            t += k + " " + self.data[k]["value"] + u + "\n"
+        return t
 
