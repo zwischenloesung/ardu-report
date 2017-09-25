@@ -10,8 +10,8 @@ class TestSerialReader(unittest.TestCase):
         self.store = datastore.DataStore()
         self.reader = serialreader.SerialReader(None, 9600, self.store, 20)
         self.reader.device_name = "loop://"
-        s = serial.serial_for_url("loop://", timeout=5)
-        self.reader.device = s
+        self.reader.device = serial.serial_for_url("loop://", timeout=5)
+        self.test_json = ' \n\n[ \n  {"name":"light_value","value":"777"} \n] \n'
 
     def test_timeout(self):
         # we can not really test the actual timeout of the real serial
@@ -23,8 +23,7 @@ class TestSerialReader(unittest.TestCase):
         self.reader.run()
 
     def test_single_run(self):
-        j = ' \n\n[ \n  {"name":"light_value","value":"777"} \n] \n'
-        self.reader.device.write(j)
+        self.reader.device.write(self.test_json)
         self.reader.run()
         self.assertEqual("777", self.store.data["light_value"]["value"])
 
