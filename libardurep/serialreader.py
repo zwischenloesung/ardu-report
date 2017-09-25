@@ -27,24 +27,26 @@ class SerialReader(threading.Thread):
             rounds        number of rounds to run / listen for input
         """
         threading.Thread.__init__(self)
-        self.device = device
         self.baudrate = baudrate
         self.store = store
         self.rounds = rounds
         self.do_run = True
+        self.device_name = device
+        try:
+            if device:
+                self.device = serial.Serial(device, self.baudrate);
+        except serial.serialutil.SerialException:
+            print "Could not connect to the serial line at " + self.device_name
 
     def run(self):
         """
         Open a connection over the serial line and receive data lines
         """
         try:
-            arduino_serial = serial.Serial(self.device, self.baudrate);
-
             data = ""
-
             while (self.do_run):
-                if (arduino_serial.inWaiting() > 1):
-                    l = arduino_serial.readline()[:-2]
+                if (self.device.inWaiting() > 1):
+                    l = self.device.readline()[:-2]
 
                     if (l == "["):
                         # start recording
@@ -60,9 +62,15 @@ class SerialReader(threading.Thread):
                     elif (l[0:3] == "  {"):
                         # this is a data line
                         data = data + " " + l
+                else:
+                    if self.rounds == 1:
+                        self.do_run = False
+                    elif self.rounds > 1:
+                        self.rounds -= 1
+
 
         except serial.serialutil.SerialException:
-            print "Could not connect to the serial line at " + self.device
+            print "Could not connect to the serial line at " + self.device_name
 
     def halt(self):
         """
