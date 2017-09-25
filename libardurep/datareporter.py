@@ -90,7 +90,7 @@ class DataReporter(object):
         """
         pass
 
-    def register_credentials(self, credential=None, user=None, user_file=None, password=None, password_file=None):
+    def register_credentials(self, credentials=None, user=None, user_file=None, password=None, password_file=None):
         """
         Helper method to store username and password
         """
@@ -111,10 +111,10 @@ class DataReporter(object):
                             # strip away the newline
                             l = l[0:-1]
                             self.credentials["user"] = re.sub(pattern, "", l)
-            # remove any surrounding quotes
-            if self.credentials["user"][0:1] == '"' and \
+                # remove any surrounding quotes
+                if self.credentials["user"][0:1] == '"' and \
                                     self.credentials["user"][-1:] == '"':
-                self.credentials["user"] = self.credentials["user"][1:-1]
+                    self.credentials["user"] = self.credentials["user"][1:-1]
             # set the password from CLI or file
             if password:
                 self.credentials["password"] = password
@@ -128,15 +128,16 @@ class DataReporter(object):
                             l = l[0:-1]
                             self.credentials["password"] = \
                                                     re.sub(pattern, "", l)
-            # remove any surrounding quotes
-            if self.credentials["password"][0:1] == '"' and \
+                # remove any surrounding quotes
+                if self.credentials["password"][0:1] == '"' and \
                                     self.credentials["password"][-1:] == '"':
-                self.credentials["password"] = \
+                    self.credentials["password"] = \
                                         self.credentials["password"][1:-1]
 
             # if both user and password is set,
             #  1. encode to base 64 for basic auth
-            if self.credentials["user"] and self.credentials["password"]:
+            if self.credentials.has_key("user") and \
+                            self.credentials.has_key("password"):
                 self.credentials["base64"] = b64encode(self.credentials["user"]\
                         + ":" + self.credentials["password"]).decode("ascii")
 
