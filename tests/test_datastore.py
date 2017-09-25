@@ -47,3 +47,12 @@ class TestDataStore(unittest.TestCase):
         self.assertEqual(t0, r0)
         self.assertEqual(t1, r1)
         self.assertEqual(t2, r2)
+
+    def test_get_json(self):
+        j = '[ {"name":"foo","value":"777"} ]'
+
+        self.store.register_json(j)
+        j_son = json.loads(self.store.get_json())
+
+        self.assertEqual(j_son["foo"]["value"], "777")
+
