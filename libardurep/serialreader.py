@@ -68,7 +68,6 @@ class SerialReader(threading.Thread):
                     elif self.rounds > 1:
                         self.rounds -= 1
 
-
         except serial.serialutil.SerialException:
             print "Could not connect to the serial line at " + self.device_name
 
