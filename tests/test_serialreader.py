@@ -2,6 +2,7 @@
 import unittest2 as unittest
 import json
 import serial
+import time
 
 from libardurep import datastore, serialreader
 
@@ -26,4 +27,11 @@ class TestSerialReader(unittest.TestCase):
         self.reader.device.write(self.test_json)
         self.reader.run()
         self.assertEqual("777", self.store.data["light_value"]["value"])
+
+    def test_single_thread(self):
+        self.reader.start()
+        self.assertTrue(self.reader.is_alive())
+        self.reader.halt()
+        time.sleep(2)
+        self.assertFalse(self.reader.is_alive())
 
