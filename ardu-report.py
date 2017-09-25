@@ -14,6 +14,22 @@ COPYRIGHT:    (C) 2017 by Michael Lustenberger and INOFIX GmbH
 
 #from libardurep import datastore, datareporter, serialreader
 import argparse
+import time
+
+def standard_mode(args):
+    """
+    Helper function to run for a certain amount of time
+    """
+#    credentials = get_credentials(args)
+
+#    logger = DataLogger(args.target, credentials, args.insecure)
+#    store = DataLogger(args.target, credentials, args.insecure)
+
+#    reader = SerialReader(args.device, args.baudrate, logger, args.rounds)
+#    reader.start()
+    time.sleep(args.seconds)
+#    reader.halt()
+#    logger.log()
 
 if __name__ == '__main__':
     """
@@ -34,4 +50,9 @@ if __name__ == '__main__':
 
     args = cli_parser.parse_args()
 
+    if args.interactive:
+        pass
+#        user_mode(args)
+    else:
+        standard_mode(args)
 
