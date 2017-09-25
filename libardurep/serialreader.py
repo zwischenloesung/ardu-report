@@ -18,7 +18,7 @@ class SerialReader(threading.Thread):
     Reader class for connecting to an end device and reading its output
     """
 
-    def __init__(self, device, baudrate, store, rounds):
+    def __init__(self, device, baudrate, store, rounds=100, timeout=60):
         """
         Initialize the serial reader class
             device        device name to connect to
@@ -34,7 +34,7 @@ class SerialReader(threading.Thread):
         self.device_name = device
         try:
             if device:
-                self.device = serial.Serial(device, self.baudrate);
+                self.device = serial.Serial(device, self.baudrate, timeout=timeout);
         except serial.serialutil.SerialException:
             print "Could not connect to the serial line at " + self.device_name
 
