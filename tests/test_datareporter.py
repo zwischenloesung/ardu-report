@@ -12,6 +12,20 @@ class TestDataReport(unittest.TestCase):
         self.reporter = datareporter.DataReporter(self.store)
 
     def test_log(self):
-#        self.reporter.log()
+        # this is tested in the actual log_*() respectively
         pass
+
+    def test_log_stdout(self):
+        # this is tested anyway in self.store.get_text()
+        pass
+
+    def test_log_file(self):
+        import tempfile
+        self.store.register_json('[{"name":"foo"}]')
+        tf = tempfile.NamedTemporaryFile()
+        self.reporter.log_file("file:///" + tf.name)
+
+        with open(tf.name, "r") as fh:
+            c = fh.read()
+        self.assertEqual(self.store.get_json_tuples(), c)
 
