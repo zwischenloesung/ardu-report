@@ -3,6 +3,7 @@ import unittest2 as unittest
 import datetime
 import json
 import re
+import tempfile
 
 from libardurep import datastore, datareporter
 
@@ -20,7 +21,6 @@ class TestDataReport(unittest.TestCase):
         pass
 
     def test_log_file(self):
-        import tempfile
         self.store.register_json('[{"name":"foo"}]')
 
         tf = tempfile.NamedTemporaryFile()
@@ -45,4 +45,18 @@ class TestDataReport(unittest.TestCase):
     def test_log_ssh(self):
         # not implemented yet
         pass
+
+    def test_register_credentials(self):
+        tf = tempfile.NamedTemporaryFile()
+
+        u = "me"
+        p = "secret"
+
+        self.reporter.register_credentials({"user":u,"password":p})
+        self.assertEqual(self.reporter.credentials["user"], u)
+        self.assertEqual(self.reporter.credentials["password"], p)
+
+        with open(tf.name, "w") as fh:
+            fh.write("user: " + u + "\npassword: " + p + "\n")
+
 
