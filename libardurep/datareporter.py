@@ -54,16 +54,12 @@ class DataReporter(object):
     def log_file(self, url=None):
         """
         Write to a local log file
-#TODO: I think we should add the tuples to the file here. Unlike the post
-       method which just pushes the data onto a web server, that must take
-       care of the post-processing itself, a local fill is probably expected
-       to just grow...
         """
         if url is None:
             url = self.url
         f = re.sub("file://", "", url)
         try:
-            with open(f, "w") as of:
+            with open(f, "a") as of:
                 of.write(str(self.store.get_json_tuples()))
         except IOError as e:
             print e
