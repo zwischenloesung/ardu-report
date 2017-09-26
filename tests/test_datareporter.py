@@ -22,10 +22,18 @@ class TestDataReport(unittest.TestCase):
     def test_log_file(self):
         import tempfile
         self.store.register_json('[{"name":"foo"}]')
+
         tf = tempfile.NamedTemporaryFile()
+
         self.reporter.log_file("file:///" + tf.name)
-
         with open(tf.name, "r") as fh:
-            c = fh.read()
-        self.assertEqual(self.store.get_json_tuples(), c)
+            fc = fh.read()
+        sc = self.store.get_json_tuples()
 
+        self.assertEqual(sc, fc)
+
+        self.reporter.log_file("file:///" + tf.name)
+        with open(tf.name, "r") as fh:
+            fc = fh.read()
+
+        self.assertEqual(sc + sc, fc)
