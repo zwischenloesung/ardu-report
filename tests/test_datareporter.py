@@ -37,3 +37,12 @@ class TestDataReport(unittest.TestCase):
             fc = fh.read()
 
         self.assertEqual(sc + sc, fc)
+
+    def test_log_post(self):
+        # Create a local http server? ...
+        pass
+
+    def test_log_ssh(self):
+        # not implemented yet
+        pass
+
