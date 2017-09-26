@@ -50,15 +50,27 @@ class TestDataStore(unittest.TestCase):
 
     def test_get_json(self):
         j = '[{"name":"foo","value":"777"}]'
-
         self.store.register_json(j)
-        j_son = json.loads(self.store.get_json())
 
+        j_son = json.loads(self.store.get_json())
         self.assertEqual(j_son[0]["value"], "777")
+
+        j_son = json.loads(self.store.get_json(True))
+        self.assertEqual(j_son[0]["value"], "777")
+
+        j0 = self.store.get_json()
+        j1 = self.store.get_json(True)
+        self.assertTrue(len(j0) < len(j1))
 
     def test_get_json_tuples(self):
         j = '[ {"name":"foo","value":"777"} ]'
         self.store.register_json(j)
 
-        self.assertEqual(self.store.get_json()[1:-1], self.store.get_json_tuples())
+        j0 = self.store.get_json()
+        jt0 = self.store.get_json_tuples()
+        j1 = self.store.get_json(True)
+        jt1 = self.store.get_json_tuples(True)
+
+        self.assertEqual(j0[1:-1] + ",", jt0)
+        self.assertEqual(len(j1), len(jt1) + 1)
 

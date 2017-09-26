@@ -49,19 +49,27 @@ class DataStore(object):
             t += k + " " + self.data[k]["value"] + u + "\n"
         return t
 
-    def get_json(self):
+    def get_json(self, prettyprint=False):
         """
         Get the data in JSON form
         """
         j = []
         for k in self.data:
             j.append(self.data[k])
-        return json.dumps(j)
+        if prettyprint:
+            j = json.dumps(j, indent=2, separators=(',',': '))
+        else:
+            j = json.dumps(j)
+        return j
 
-    def get_json_tuples(self):
+    def get_json_tuples(self, prettyprint=False):
         """
         Get the data as JSON tuples
         """
-        j = self.get_json()
-        return j[1:-1]
+        j = self.get_json(prettyprint)
+        if prettyprint:
+            j = j[1:-2] + ",\n"
+        else:
+            j = j[1:-1] + ","
+        return j
 
