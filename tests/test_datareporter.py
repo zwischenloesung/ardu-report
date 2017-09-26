@@ -28,7 +28,7 @@ class TestDataReport(unittest.TestCase):
         self.reporter.log_file("file:///" + tf.name)
         with open(tf.name, "r") as fh:
             fc = fh.read()
-        sc = self.store.get_json_tuples()
+        sc = self.store.get_json_tuples(True)
 
         self.assertEqual(sc, fc)
 
