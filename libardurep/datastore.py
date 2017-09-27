@@ -75,9 +75,12 @@ class DataStore(object):
         Get the data as JSON tuples
         """
         j = self.get_json(prettyprint)
-        if prettyprint:
-            j = j[1:-2] + ",\n"
+        if len(j) > 2:
+            if prettyprint:
+                j = j[1:-2] + ",\n"
+            else:
+                j = j[1:-1] + ","
         else:
-            j = j[1:-1] + ","
+            j = ""
         return j
 
