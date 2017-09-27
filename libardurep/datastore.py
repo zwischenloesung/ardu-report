@@ -68,11 +68,11 @@ class DataStore(object):
         """
         t = "==== " + str(self.last_data_timestamp) + " ====\n"
         for k in self.data:
-            if self.data[k].has_key("unit"):
-                u = " " + self.data[k]["unit"]
-            else:
-                u = ""
-            t += k + " " + self.data[k]["value"] + u + "\n"
+            t += k + " " + self.data[k][self.value_key]
+            for l in self.opt_keys:
+                if self.data[k].has_key(l):
+                    t += " " + self.data[k][l]
+            t += "\n"
         return t
 
     def get_json(self, prettyprint=False):
