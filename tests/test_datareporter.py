@@ -22,7 +22,7 @@ class TestDataReport(unittest.TestCase):
         pass
 
     def test_log_file(self):
-        self.store.register_json('[{"name":"foo"}]')
+        self.store.register_json('[{"id":"foo"}]')
 
         tf = tempfile.NamedTemporaryFile()
 
