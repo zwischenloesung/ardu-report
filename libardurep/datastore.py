@@ -18,7 +18,7 @@ class DataStore(object):
     runs will eventually accumulate to full sets over time.
     """
 
-    def __init__(self, keywords=None, time_key=None):
+    def __init__(self, input_keys=None, time_key=None):
         # prepare a dict to store the data
         # this way we can wait for a stable set of values
         self.data = {}
@@ -29,10 +29,10 @@ class DataStore(object):
             self.time_key = time_key
         else:
             self.time_key = "time"
-        if keywords:
-            self.id_key = keywords[0]
-            self.value_key = keywords[1]
-            self.opt_keys = keywords[2:]
+        if input_keys:
+            self.id_key = input_keys[0]
+            self.value_key = input_keys[1]
+            self.opt_keys = input_keys[2:]
         else:
             self.id_key = "id"
             self.value_key = "value"
