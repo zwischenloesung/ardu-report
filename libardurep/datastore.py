@@ -18,21 +18,25 @@ class DataStore(object):
     runs will eventually accumulate to full sets over time.
     """
 
-    def __init__(self, keywords=None, time_keyword=None):
+    def __init__(self, keywords=None, time_key=None):
         # prepare a dict to store the data
         # this way we can wait for a stable set of values
         self.data = {}
         # remember the time of the last data update
         self.last_data_timestamp = None
         # keywords to use
-        if time_keyword:
-            self.time_keyword = time_keyword
+        if time_key:
+            self.time_key = time_key
         else:
-            self.time_keyword = "time"
+            self.time_key = "time"
         if keywords:
-            self.keywords = keywords
+            self.id_key = keywords[0]
+            self.value_key = keywords[1]
+            self.opt_keys = keywords[2:]
         else:
-            self.keywords = [ "id", "value", "unit", "threshold" ]
+            self.id_key = "id"
+            self.value_key = "value"
+            self.opt_keys = [ "unit", "threshold" ]
 
     def register_json(self, data):
         """
@@ -44,9 +48,16 @@ class DataStore(object):
 
         try:
             for v in j:
-                self.data[v[self.keywords[0]]] = v
-                self.data[v[self.keywords[0]]][self.time_keyword] = \
-                                                    self.last_data_timestamp
+                self.data[v[self.id_key]] = {}
+                self.data[v[self.id_key]][self.id_key] = \
+                                            v[self.id_key]
+                self.data[v[self.id_key]][self.value_key] = \
+                                            v[self.value_key]
+                self.data[v[self.id_key]][self.time_key] = \
+                                            self.last_data_timestamp
+                for w in self.opt_keys:
+                    if v.has_key(w):
+                        self.data[v[self.id_key]][w] = v[w]
         except KeyError as e:
             print "The main key was not found on the serial input line: " + \
                     str(e)
