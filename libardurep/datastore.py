@@ -18,12 +18,17 @@ class DataStore(object):
     runs will eventually accumulate to full sets over time.
     """
 
-    def __init__(self):
+    def __init__(self, keywords=None):
         # prepare a dict to store the data
         # this way we can wait for a stable set of values
         self.data = {}
         # remember the time of the last data update
         self.last_data_timestamp = None
+        # keywords to use
+        if keywords:
+            self.keywords = keywords
+        else:
+            self.keywords = [ "id", "value", "unit", "threshold" ]
 
     def register_json(self, data):
         """
@@ -32,9 +37,12 @@ class DataStore(object):
         j = json.loads(data)
         self.last_data_timestamp = datetime.datetime.utcnow().replace(microsecond=0).isoformat()
 
-        for v in j:
-            v["time"] = self.last_data_timestamp
-            self.data[v["id"]] = v
+        try:
+            for v in j:
+                v["time"] = self.last_data_timestamp
+                self.data[v[self.keywords[0]]] = v
+        except KeyError as e:
+            print "The main key was not found on the serial input line: " + str(e)
 
     def get_text(self):
         """
