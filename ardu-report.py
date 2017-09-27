@@ -152,7 +152,7 @@ if __name__ == '__main__':
     cli_parser.add_argument('-d', '--device', default='/dev/ttyACM0', help='serial device the arduino is connected to')
     cli_parser.add_argument('-i', '--interactive', action="store_true", help='prompt for control and log to stdout')
     cli_parser.add_argument('-I', '--insecure', default=False, action="store_true", help='do not verify certificate on HTTPS POST')
-    cli_parser.add_argument('-k', '--keyword_translation', help='list of comma separated keys to expect from the serial input line; default="id,value,unit,threshold"')
+    cli_parser.add_argument('-k', '--keyword_translation', help='list of comma separated keys to expect from the serial input line; the first one must be the ID; default="id,value,unit,threshold"')
     cli_parser.add_argument('-o', '--output', default="", help='output target, where to report the data to. Default is empty for <stdout>, the following URLs are provided yet: "file:///..", "http://..", "https://.."')
     cli_parser.add_argument('-p', '--password', action="store_true", help='prompt for a password')
     cli_parser.add_argument('-P', '--password_file', default='', help='load password from this file, containing the line: \'password: "my secret text"\'')
