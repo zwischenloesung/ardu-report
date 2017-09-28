@@ -1,4 +1,5 @@
 {
+    "$schema": "https://raw.githubusercontent.com/inofix/ardu-report/master/json/meta-schema.json",
     "$id": "https://raw.githubusercontent.com/inofix/ardu-report/master/json/default-schema.json",
     "title": "Default Sensor Data Schema",
     "description": "Definition of the inofix.ch arduino sensor data output JSON. (Customizations must only respect the use flag and may vary the property names. Please validate against this schema.)",
@@ -25,6 +26,7 @@
                 "use": "threshold"
             }
         },
+        "minProperties": 2,
         "required": ["id", "value"]
     }
 }
