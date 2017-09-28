@@ -1,3 +1,4 @@
 jsonschema
-unittest2
 requests
+serial
+unittest2
