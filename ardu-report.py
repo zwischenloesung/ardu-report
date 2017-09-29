@@ -13,7 +13,7 @@ COPYRIGHT:    (C) 2017 by Michael Lustenberger and INOFIX GmbH
 """
 
 #from libardurep import datastore, datareporter, serialreader
-import argparse
+import configargparse
 import getpass
 import os
 import re
@@ -132,8 +132,9 @@ if __name__ == '__main__':
     """
     Main function used if started on the command line
     """
-    p = argparse.ArgumentParser(description="Parse data from the arduino and use it for the Flussbad-Demo.")
+    p = configargparse.ArgumentParser(default_config_files=['/etc/ardu_report/config', '~/.ardu_report/config', './.ardu_report.conf'], description="Parse data from the arduino and report it anywhere.\n\n")
     p.add_argument('-b', '--baudrate', default=9600, help='baud rate of the serial line')
+    p.add('-c', '--config', required=False, is_config_file=True, help='config file path')
     p.add_argument('-d', '--device', default='/dev/ttyACM0', help='serial device the arduino is connected to')
     p.add_argument('-i', '--interactive', action="store_true", help='prompt for control and log to stdout')
     p.add_argument('-j', '--json_schema', help='file containing the input JSON schema."')
