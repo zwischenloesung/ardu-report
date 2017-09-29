@@ -26,19 +26,31 @@ class DataStore(object):
         # prepare a dict to store the data
         # this way we can wait for a stable set of values
         self.data = {}
-        # define the default keywords
-        ## mandatory
-        self.id_key = "id"
-        self.value_key = "value"
-        ## optional but well known
-        self.unit_key = "unit"
-        self.threshold_key = "threshold"
-        ## special time keys
-        ### report time
-        self.time_key = "time"
-        ### if sensor transmits a timestamp
+
+        # the konstant meta keys used here and in the meta schema
+        self.key = "key"
+        self.items = "items"
+        self.properties = "properties"
+        self.id = "id"
+        self.value = "value"
+        self.unit = "unit"
+        self.threshold = "threshold"
+        self.other = "other"
+        self.time = "time"
+        # if sensor transmits a timestamp
         self.sensor_time_key = "sensor_timestamp"
         self.fallback_time_key = "report_timestamp"
+
+        # define the default keywords for input -> output
+        ## mandatory
+        self.id_key = self.id
+        self.value_key = self.value
+        ## optional but well known
+        self.unit_key = self.unit
+        self.threshold_key = self.threshold
+        ## special time keys
+        ### report time
+        self.time_key = self.time
         ## the whole well known as an "input: output" map...
         self.well_now_keys = {
             self.id_key: self.id_key,
@@ -49,6 +61,7 @@ class DataStore(object):
         }
         ## the rest to be set based on the schema files
         self.other_keys = {}
+
         # see whether to override the keywords on in- or output
         self.parse_schemas(in_schema, in_meta_schema, \
                                     out_schema, out_meta_schema)
@@ -57,28 +70,48 @@ class DataStore(object):
                                     out_schema, out_meta_schema):
         # load the two JSON schema objects
         if in_schema and in_meta_schema:
-            in_m = json.loads(in_meta_schema)
-            in_s = json.loads(in_schema)
+            m = json.loads(in_meta_schema)
+            s = json.loads(in_schema)
             # add some sanity argument before changing the config
-            Validator(in_m).validate(in_s)
-            # search for the keys
-            for k in in_s["items"]["properties"]:
-                v = in_s["items"]["properties"][k]
-                if v.has_key("use"):
-                    if v["use"] == "identifier":
+            Validator(m).validate(s)
+            # search for the keys and change them if the schema requests
+            for k in s[self.items][self.properties]:
+                v = s[self.items][self.properties][k]
+                if v.has_key(self.key):
+                    if v[self.key] == self.id:
                         self.id_key = k
-                    elif v["use"] == "value":
+                    elif v[self.key] == self.value:
                         self.value_key = k
-                    elif v["use"] == "unit":
+                    elif v[self.key] == self.unit:
                         self.unit_key = k
-                    elif v["use"] == "threshold":
+                    elif v[self.key] == self.threshold:
                         self.threshold_key = k
-                    elif v["use"] == "timestamp":
+                    elif v[self.key] == self.timestamp:
                         if k == self.time_key:
                             self.time_key = self.fallback_time_key
                         self.sensor_time_key = k
-                    elif v["use"] == "other":
-                        self.other_keys.append(k, "")
+                    elif v[self.key] == self.other:
+                        self.other_keys[k] = None
+                    # else: just throw it away..
+        elif in_schema:
+            raise TypeError('Received input schema but no meta schema..')
+        if out_schema and out_meta_schema:
+            m = json.loads(out_meta_schema)
+            s = json.loads(out_schema)
+            # add some sanity argument before changing the config
+            Validator(m).validate(s)
+            # search for the keys and change them if the schema requests
+            for k in s[self.items][self.properties]:
+                v = s[self.items][self.properties][k]
+                if v.has_key(self.key):
+                    t = v[self.key]
+                    if self.well_now_keys.has_key(t):
+                        self.well_now_keys[t] = k
+                    elif self.other_keys.has_key(t):
+                        self.other_keys[t] = k
+                    # else: just throw it away..
+        elif out_schema:
+            raise TypeError('Received input schema but no meta schema..')
 
     def register_json(self, data):
         """
