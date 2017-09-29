@@ -187,24 +187,28 @@ class DataStore(object):
             j[k] = d
         return j
 
-    def get_json(self, prettyprint=False):
+    def get_json(self, prettyprint=False, translate=True):
         """
         Get the data in JSON form
         """
         j = []
-        for k in self.data:
-            j.append(self.data[k])
+        if translate:
+            d = self.get_translated_data()
+        else:
+            d = self.data
+        for k in d:
+            j.append(d[k])
         if prettyprint:
             j = json.dumps(j, indent=2, separators=(',',': '))
         else:
             j = json.dumps(j)
         return j
 
-    def get_json_tuples(self, prettyprint=False):
+    def get_json_tuples(self, prettyprint=False, translate=True):
         """
         Get the data as JSON tuples
         """
-        j = self.get_json(prettyprint)
+        j = self.get_json(prettyprint, translate)
         if len(j) > 2:
             if prettyprint:
                 j = j[1:-2] + ",\n"
