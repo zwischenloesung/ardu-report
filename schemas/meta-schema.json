@@ -40,10 +40,10 @@
                                         { "pattern": "^string$" }
                                     ]
                                 },
-                                "use": {
+                                "key": {
                                     "type": "string",
                                     "oneOf": [
-                                        { "pattern": "^identifier$" },
+                                        { "pattern": "^id$" },
                                         { "pattern": "^value$" },
                                         { "pattern": "^unit$" },
                                         { "pattern": "^threshold$" },
@@ -52,7 +52,7 @@
                                     ]
                                 }
                             },
-                            "required": ["type", "use"]
+                            "required": ["type", "key"]
                         }
                     }
                 },
