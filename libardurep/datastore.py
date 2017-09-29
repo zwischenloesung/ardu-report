@@ -18,25 +18,35 @@ class DataStore(object):
     runs will eventually accumulate to full sets over time.
     """
 
-    def __init__(self, input_keys=None, time_key=None):
+    def __init__(self, in_schema=None, in_meta_schema=None, \
+                        out_schema=None, out_meta_schema=None):
+        # prepare a timestamp to remember the last data update
+        self.last_data_timestamp = None
         # prepare a dict to store the data
         # this way we can wait for a stable set of values
         self.data = {}
-        # remember the time of the last data update
-        self.last_data_timestamp = None
-        # keywords to use
-        if time_key:
-            self.time_key = time_key
-        else:
-            self.time_key = "time"
-        if input_keys:
-            self.id_key = input_keys[0]
-            self.value_key = input_keys[1]
-            self.opt_keys = input_keys[2:]
-        else:
-            self.id_key = "id"
-            self.value_key = "value"
-            self.opt_keys = [ "unit", "threshold" ]
+        # define the default keywords
+        ## mandatory
+        self.id_key = "id"
+        self.value_key = "value"
+        ## optional but well known
+        self.unit_key = "unit"
+        self.threshold_key = "threshold"
+        ## special time keys
+        ### report time
+        self.time_key = "time"
+        ### if sensor transmits a timestamp
+        self.sensor_time_key = "timestamp"
+        ## the whole well known as an "input: output" map...
+        self.well_now_keys = {
+            self.id_key: self.id_key,
+            self.value_key: self.value_key,
+            self.unit_key: self.unit_key,
+            self.threshold_key: self.threshold_key,
+            self.time_key: self.sensor_time_key
+        }
+        ## the rest to be set based on the schema files
+        self.other_keys = {}
 
     def register_json(self, data):
         """
@@ -48,16 +58,26 @@ class DataStore(object):
 
         try:
             for v in j:
+                # prepare the sensor entry container
                 self.data[v[self.id_key]] = {}
+                # add the mandatory entries
                 self.data[v[self.id_key]][self.id_key] = \
                                             v[self.id_key]
                 self.data[v[self.id_key]][self.value_key] = \
                                             v[self.value_key]
+                # add the time the data was received
                 self.data[v[self.id_key]][self.time_key] = \
                                             self.last_data_timestamp
-                for w in self.opt_keys:
-                    if v.has_key(w):
-                        self.data[v[self.id_key]][w] = v[w]
+                # add the optional well known entries if provided
+                if v.has_key(self.unit_key):
+                    self.data[v[self.id_key]][self.unit_key] = \
+                                            v[self.unit_key]
+                if v.has_key(self.threshold_key):
+                    self.data[v[self.id_key]][self.threshold_key] = \
+                                            v[self.threshold_key]
+                for k in self.other_keys:
+                    if v.has_key(k):
+                        self.data[v[self.id_key]][k] = v[k]
         except KeyError as e:
             print "The main key was not found on the serial input line: " + \
                     str(e)
@@ -71,8 +91,19 @@ class DataStore(object):
         """
         t = "==== " + str(self.last_data_timestamp) + " ====\n"
         for k in self.data:
-            t += k + " " + self.data[k][self.value_key]
-            for l in self.opt_keys:
+            t += k + " " + str(self.data[k][self.value_key])
+            u = ""
+            if self.data[k].has_key(self.unit_key):
+                u = self.data[k][self.unit_key]
+                t += u
+            if self.data[k].has_key(self.threshold_key):
+                if (self.data[k][self.threshold_key] < \
+                                    self.data[k][self.value_key]):
+                    t += " !Warning: Value is over threshold: " + \
+                                str(self.data[k][self.threshold_key]) + "!"
+                else:
+                    t += " (" + str(self.data[k][self.threshold_key]) + u + ")"
+            for l in self.other_keys:
                 if self.data[k].has_key(l):
                     t += " " + self.data[k][l]
             t += "\n"
