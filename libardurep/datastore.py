@@ -86,7 +86,7 @@ class DataStore(object):
                         self.unit_key = k
                     elif v[self.key] == self.threshold:
                         self.threshold_key = k
-                    elif v[self.key] == self.timestamp:
+                    elif v[self.key] == self.time:
                         if k == self.time_key:
                             self.time_key = self.fallback_time_key
                         self.sensor_time_key = k
