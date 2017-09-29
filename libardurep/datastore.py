@@ -82,7 +82,6 @@ class DataStore(object):
         j = json.loads(data)
         self.last_data_timestamp = \
                 datetime.datetime.utcnow().replace(microsecond=0).isoformat()
-
         try:
             for v in j:
                 # prepare the sensor entry container
