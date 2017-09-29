@@ -49,33 +49,36 @@ class DataStore(object):
         }
         ## the rest to be set based on the schema files
         self.other_keys = {}
-        if in_schema and in_meta_schema:
-            self.parse_schema(in_schema, in_meta_schema)
+        # see whether to override the keywords on in- or output
+        self.parse_schemas(in_schema, in_meta_schema, \
+                                    out_schema, out_meta_schema)
 
-    def parse_schema(self, schema, meta_schema):
+    def parse_schemas(self, in_schema, in_meta_schema, \
+                                    out_schema, out_meta_schema):
         # load the two JSON schema objects
-        m = json.loads(meta_schema)
-        s = json.loads(schema)
-        # add some sanity argument before changing the config
-        Validator(m).validate(s)
-        # search for the keys
-        for k in s["items"]["properties"]:
-            v = s["items"]["properties"][k]
-            if v.has_key("use"):
-                if v["use"] == "identifier":
-                    self.id_key = k
-                elif v["use"] == "value":
-                    self.value_key = k
-                elif v["use"] == "unit":
-                    self.unit_key = k
-                elif v["use"] == "threshold":
-                    self.threshold_key = k
-                elif v["use"] == "timestamp":
-                    if k == self.time_key:
-                        self.time_key = self.fallback_time_key
-                    self.sensor_time_key = k
-                elif v["use"] == "other":
-                    self.other_keys.append(k, "")
+        if in_schema and in_meta_schema:
+            in_m = json.loads(in_meta_schema)
+            in_s = json.loads(in_schema)
+            # add some sanity argument before changing the config
+            Validator(in_m).validate(in_s)
+            # search for the keys
+            for k in in_s["items"]["properties"]:
+                v = in_s["items"]["properties"][k]
+                if v.has_key("use"):
+                    if v["use"] == "identifier":
+                        self.id_key = k
+                    elif v["use"] == "value":
+                        self.value_key = k
+                    elif v["use"] == "unit":
+                        self.unit_key = k
+                    elif v["use"] == "threshold":
+                        self.threshold_key = k
+                    elif v["use"] == "timestamp":
+                        if k == self.time_key:
+                            self.time_key = self.fallback_time_key
+                        self.sensor_time_key = k
+                    elif v["use"] == "other":
+                        self.other_keys.append(k, "")
 
     def register_json(self, data):
         """
