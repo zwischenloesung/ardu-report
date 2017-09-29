@@ -10,6 +10,7 @@ COPYRIGHT:    (C) 2017 by Michael Lustenberger and the INOFIX GmbH
 
 import datetime
 import json
+from jsonschema import Draft4Validator as Validator
 
 class DataStore(object):
     """
@@ -36,7 +37,8 @@ class DataStore(object):
         ### report time
         self.time_key = "time"
         ### if sensor transmits a timestamp
-        self.sensor_time_key = "timestamp"
+        self.sensor_time_key = "sensor_timestamp"
+        self.fallback_time_key = "report_timestamp"
         ## the whole well known as an "input: output" map...
         self.well_now_keys = {
             self.id_key: self.id_key,
@@ -47,6 +49,31 @@ class DataStore(object):
         }
         ## the rest to be set based on the schema files
         self.other_keys = {}
+
+    def parse_schema(data, schema, meta_schema):
+        # load the two JSON schema objects
+        m = json.load(meta_schema)
+        s = json.load(schema)
+        # add some sanity argument before changing the config
+        Validator(m).validate(s)
+        # search for the keys
+        for k in s["items"]["properties"]:
+            v = s["items"]["properties"][k]
+            if v.has_key["use"]:
+                if v["use"] == "identifier":
+                    self.id_key = k
+                elif v["use"] == "value":
+                    self.value_key = k
+                elif v["use"] == "unit":
+                    self.unit_key = k
+                elif v["use"] == "threshold":
+                    self.threshold_key = k
+                elif v["use"] == "timestamp":
+                    if k == self.time_key:
+                        self.time_key = self.fallback_time_key
+                    self.sensor_time_key = k
+                elif v["use"] == "other":
+                    self.other_keys.append(k, "")
 
     def register_json(self, data):
         """
@@ -65,9 +92,6 @@ class DataStore(object):
                                             v[self.id_key]
                 self.data[v[self.id_key]][self.value_key] = \
                                             v[self.value_key]
-                # add the time the data was received
-                self.data[v[self.id_key]][self.time_key] = \
-                                            self.last_data_timestamp
                 # add the optional well known entries if provided
                 if v.has_key(self.unit_key):
                     self.data[v[self.id_key]][self.unit_key] = \
@@ -75,9 +99,18 @@ class DataStore(object):
                 if v.has_key(self.threshold_key):
                     self.data[v[self.id_key]][self.threshold_key] = \
                                             v[self.threshold_key]
+                # add any further entries found
                 for k in self.other_keys:
                     if v.has_key(k):
                         self.data[v[self.id_key]][k] = v[k]
+                # add the custom sensor time
+                if v.has_key(self.sensor_time_key):
+                    self.data[v[self.sensor_time_key]][self.sensor_time_key] = \
+                                            v[self.sensor_time_key]
+                # last: add the time the data was received (overwriting any
+                # not properly defined timestamp that was already there)
+                self.data[v[self.id_key]][self.time_key] = \
+                                            self.last_data_timestamp
         except KeyError as e:
             print "The main key was not found on the serial input line: " + \
                     str(e)
