@@ -179,13 +179,13 @@ class DataStore(object):
         """
         Translate the data with the translation table
         """
-        j = []
+        j = {}
         for k in self.data:
             d = {}
-            for l,m in self.data[k]:
-                d[self.translation_keys[l]] = m
-                j.append(self.data[k])
-        print j
+            for l in self.data[k]:
+                d[self.translation_keys[l]] = self.data[k][l]
+            j[k] = d
+        return j
 
     def get_json(self, prettyprint=False):
         """

@@ -76,6 +76,25 @@ class TestDataStore(unittest.TestCase):
         self.assertEqual(t1, r1)
         self.assertEqual(t2, r2)
 
+    def test_get_tranlated_data(self):
+        with open("./schemas/meta-schema.json", "r") as fh:
+            ma = fh.read()
+        with open("./schemas/default-schema.json", "r") as fh:
+            sa = fh.read()
+        with open("./examples/custom-output-meta-schema.json", "r") as fh:
+            mb = fh.read()
+        with open("./examples/custom-output-schema.json", "r") as fh:
+            sb = fh.read()
+        self.store.parse_schemas(sa, ma, sb, mb)
+        j = '[ {"id":"a","value":"8","unit":"m"}, {"id":"b","value":"9"} ]'
+        self.store.register_json(j)
+        d = self.store.get_translated_data()
+        self.assertTrue(d.has_key('a'))
+        self.assertTrue(d.has_key('b'))
+        self.assertTrue(d['a'].has_key('ourVeryCustomSensorName'))
+        self.assertTrue(d['a']['ourVeryCustomSensorName'] == 'a')
+        self.assertTrue(d['b'].has_key('sensorValue'))
+
     def test_get_json(self):
         j = '[{"id":"foo","value":"777"}]'
         self.store.register_json(j)
