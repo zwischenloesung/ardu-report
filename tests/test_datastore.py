@@ -25,6 +25,20 @@ class TestDataStore(unittest.TestCase):
         with self.assertRaises(TypeError):
             self.store.parse_schemas(None, None, s, None)
         self.store.parse_schemas(None, None, s, m)
+        with open("./schemas/meta-schema.json", "r") as fh:
+            m = fh.read()
+        with open("./examples/extended-input-schema.json", "r") as fh:
+            s = fh.read()
+        with self.assertRaises(TypeError):
+            self.store.parse_schemas(s, None, None, None)
+        self.store.parse_schemas(s, m, None, None)
+        with open("./examples/custom-output-meta-schema.json", "r") as fh:
+            m = fh.read()
+        with open("./examples/custom-output-schema.json", "r") as fh:
+            s = fh.read()
+        with self.assertRaises(TypeError):
+            self.store.parse_schemas(None, None, s, None)
+        self.store.parse_schemas(None, None, s, m)
         self.store.parse_schemas(s, m, s, m)
 
     def test_register_json(self):
