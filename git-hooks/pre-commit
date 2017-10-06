@@ -32,7 +32,7 @@ if ! git diff --quiet HEAD ; then
 
             i=0
             for v in `echo $new_version | tr "-" " "` ; do
-                eval "echo v_$i=$v"
+                eval "v_$i=$v"
             done
 
             official_version="$v_0"

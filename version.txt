@@ -1,2 +1,2 @@
-Real Version: 0.9
-Official Version: 0.9
+Real Version: 0.9-1-g6248262
+Official Version: g6248262
