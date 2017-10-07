@@ -32,13 +32,13 @@ def interactive_mode(args):
     # hold a dict of serial connections
     threads = {}
 
-    print "Welcome to the interactive mode!"
-    print "You have the following options:"
-    print "    rounds num                       number of rounds to run threads"
-    print "    register [device] [baud]         add a device to observe"
-    print "    unregister [device]              remove a device"
-    print "    report                           write results to stdout"
-    print "    exit                             cleanup and quit"
+    print("Welcome to the interactive mode!")
+    print("You have the following options:")
+    print("    rounds num                       number of rounds to run threads")
+    print("    register [device] [baud]         add a device to observe")
+    print("    unregister [device]              remove a device")
+    print("    report                           write results to stdout")
+    print("    exit                             cleanup and quit")
 
     # set the default number of rounds to run a thread from the CLI
     rounds = args.rounds
@@ -89,7 +89,7 @@ def interactive_mode(args):
             # now do what the user wants
             if (mode == "register"):
                 if threads.has_key(device_name):
-                    print "This device was already registered"
+                    print("This device was already registered")
                 else:
                     # create an object that connects to the serial line
                     threads[device_name] = serialreader.SerialReader(device, baudrate, store, rounds)
@@ -104,11 +104,11 @@ def interactive_mode(args):
                 if reporter.store.last_data_timestamp:
                     reporter.log_stdout()
                 else:
-                    print "No data has been collected so far, please try again later.."
+                    print("No data has been collected so far, please try again later..")
             else:
-                print "This mode is not supported: " + mode
-                print "Use one of 'rounds', 'register', 'unregister', "\
-                      "'report', or 'exit' ..."
+                print("This mode is not supported: " + mode)
+                print("Use one of 'rounds', 'register', 'unregister', "\
+                      "'report', or 'exit' ...")
 
 def create_store(args):
     if args.json_input_schema and args.meta_input_schema:
@@ -172,10 +172,10 @@ if __name__ == '__main__':
     args = p.parse_args()
 
     if args.json_input_schema and not args.meta_input_schema:
-        print "If a 'json_input_schema' is provided, the 'meta_input_schema' is required."
+        print("If a 'json_input_schema' is provided, the 'meta_input_schema' is required.")
         exit()
     if args.json_output_schema and not args.meta_output_schema:
-        print "If a 'json_output_schema' is provided, the 'meta_output_schema' is required."
+        print("If a 'json_output_schema' is provided, the 'meta_output_schema' is required.")
         exit()
 
     if args.interactive:
