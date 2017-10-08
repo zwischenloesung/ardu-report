@@ -11,9 +11,11 @@ Dependencies, Requirements
 
  * Unix/Linux
 
- * Python 2.7
+ * Python 2/3
 
-  - see requrements.txt
+  - tested against: 2.7 and 3.5
+
+  - see requrements.txt for further dependencies
 
 Basic Idea
 ----------
