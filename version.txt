@@ -1,2 +1,2 @@
-Internal Version: 0.9-12-g54d626c
-Official Version: 0.9.dev12+g54d626c
+Internal Version: 1.0.0
+Official Version: 1.0.0
