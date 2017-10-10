@@ -110,7 +110,8 @@ def interactive_mode(args):
                     if reporter.store.last_data_timestamp:
                         reporter.log_stdout()
                     else:
-                        print("No data has been collected so far, please try again later..")
+                        print("No data has been collected so far, please"\
+                                "try again later..")
                 else:
                     print("This mode is not supported: " + mode)
                     print("Use one of 'rounds', 'register', 'unregister', "\
