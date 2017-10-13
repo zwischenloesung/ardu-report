@@ -8,6 +8,12 @@ Python CLI to report back the sensor data from our arduino(s). See
 (https://pypi.org/project/ardu-report-lib/ / https://github.com/inofix/ardu-report-lib)
 for the main library.
 
+Status
+------
+
+Considered: Stable
+
+
 Dependencies, Requirements
 --------------------------
 
